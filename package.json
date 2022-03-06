@@ -5,22 +5,23 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "jest",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "lint:report": "eslint --output-file eslint_report.json --format json .",
-    "prepare": "npx husky install && node .husky/link.js"
+    "build": "npx rimraf dist && tsc -p ./tsconfig.json && tscpaths -p ./tsconfig.json -s ./src -o ./dist",
+    "start": "node ./dist/index.js",
+    "dev": "nodemon -r tsconfig-paths/register src/index.ts"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Edqe14/project-template.git"
+    "url": "git+https://github.com/Edqe14/mc-commands-macro.git"
   },
   "author": "Edqe_",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Edqe14/project-template/issues"
+    "url": "https://github.com/Edqe14/mc-commands-macro/issues"
   },
-  "homepage": "https://github.com/Edqe14/project-template#readme",
+  "homepage": "https://github.com/Edqe14/mc-commands-macro#readme",
   "files": [
     "dist",
     "LICENSE",
@@ -28,9 +29,8 @@
     "package.json"
   ],
   "devDependencies": {
-    "@commitlint/cli": "16.0.1",
-    "@commitlint/config-conventional": "16.0.0",
-    "@types/jest": "27.4.0",
+    "@modii/tscpaths": "0.2.2",
+    "@types/klaw": "3.0.3",
     "@typescript-eslint/eslint-plugin": "5.8.1",
     "@typescript-eslint/parser": "5.8.1",
     "eslint": "8.5.0",
@@ -38,16 +38,24 @@
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-prettier": "4.0.0",
-    "husky": "7.0.0",
-    "jest": "27.4.5",
-    "lint-staged": "12.1.4",
+    "nodemon": "2.0.15",
     "prettier": "2.5.1",
+    "rimraf": "3.0.2",
     "ts-jest": "27.1.2",
+    "ts-node": "10.7.0",
+    "tsconfig-paths": "3.13.0",
     "typescript": "4.5.4"
   },
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
       "eslint --fix"
     ]
+  },
+  "dependencies": {
+    "dotenv": "16.0.0",
+    "enmap": "5.8.8",
+    "mineflayer": "4.1.0",
+    "nanoid": "3.3.1",
+    "socket.io": "4.4.1"
   }
 }

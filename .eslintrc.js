@@ -21,6 +21,7 @@ module.exports = {
     semi: 'off',
     quotes: 'off',
     indent: 'off',
+    'no-console': 'off',
     'no-multi-spaces': 'error',
     'consistent-return': 'off',
     'import/extensions': 'off',
