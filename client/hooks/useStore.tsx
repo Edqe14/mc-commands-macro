@@ -87,7 +87,7 @@ export const Provider = ({ url, ...props }: Props) => {
       if (!command) return;
 
       this.emit('commands.invoke', { id: command.id });
-      this.appendMessage(command.commands.map((c) => `> ${c}`));
+      this.appendMessage(command.commands);
     },
     createConnection(password) {
       // eslint-disable-next-line no-restricted-globals
