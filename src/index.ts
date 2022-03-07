@@ -8,6 +8,8 @@ import { createInstance } from '@/lib/bot';
 const bot = createInstance();
 
 io.on('connection', async (socket) => {
+  console.log(`[${socket.id}] connected`);
+
   connections.set(socket.id, {
     authed: false,
     token: null,

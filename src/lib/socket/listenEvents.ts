@@ -4,6 +4,7 @@ import { readdirSync } from 'fs';
 import path from 'path';
 import { store, connections } from '@/lib/store';
 import { SocketEventHandler } from '@/types';
+import { getInstance } from '../bot';
 
 const ext = path.extname(__filename);
 const dir = path.join(__dirname, 'events');
@@ -17,7 +18,17 @@ const events = readdirSync(dir, 'utf8')
     return acc;
   }, {} as Record<string, Promise<unknown>>);
 
+export function registerEmitter(socket: Socket, bot: Bot) {
+  socket.emit('commands.set', Array.from(store.values()));
+
+  bot.on('chat', (name: string, message: string) => {
+    socket.emit('message', { name, message });
+  });
+}
+
 export default async function listenEvents(socket: Socket, bot: Bot) {
+  registerEmitter(socket, bot);
+
   const functionsName = Object.keys(events);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const functions = (await Promise.all<Promise<any>>(Object.values(events)))
@@ -36,11 +47,14 @@ export default async function listenEvents(socket: Socket, bot: Bot) {
         return socket.disconnect(true);
       }
 
-      if (conn.token !== data.token) return socket.emit('token.error', {
+      if (conn.token !== data.token) return socket.emit('auth.error', {
         message: 'Invalid token sent'
       });
 
-      return handler({ socket, store, connections, bot, data });
+      const instance = getInstance();
+      if (!instance) return socket.emit('error', { message: 'Bot not found' });
+
+      return handler({ socket, store, connections, bot: instance, data });
     });
   });
 }
