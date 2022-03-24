@@ -32,7 +32,7 @@ export default () => {
         <h1 className="display-4 mb-3">Macros</h1>
 
         <section className="d-grid macros gap-3 overflow-visible">
-          {store.commands.map((c, i) => (<Macro key={i} {...c} />))}
+          {store.commands.sort((a, b) => a.name.localeCompare(b.name)).map((c, i) => (<Macro key={i} {...c} />))}
           <Button className="fs-2 outline-none" variant='info' onClick={openModal}>+</Button>
         </section>
       </section>

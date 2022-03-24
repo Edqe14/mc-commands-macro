@@ -17,8 +17,6 @@ import 'modern-normalize/modern-normalize.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
-const SOCKET_URL = 'http://localhost:3000';
-
 ReactDOM.render(
   <React.StrictMode>
     <BrowserRouter>
@@ -28,7 +26,7 @@ ReactDOM.render(
         timeout={5000}
         transition={transitions.FADE}
       >
-        <StoreProvider url={SOCKET_URL}>
+        <StoreProvider>
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="panel" element={<Panel />} />
