@@ -5,6 +5,8 @@ import { connections } from '@/lib/store';
 import listenEvents from '@/lib/socket/listenEvents';
 import { createInstance } from '@/lib/bot';
 
+console.log(settings);
+
 const bot = createInstance();
 
 io.on('connection', async (socket) => {
