@@ -17,7 +17,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "rimraf ./build && tsc && vite build && ncp ./build ../dist/public",
+    "build": "rimraf ./build && tsc && vite build && ncp ./build ../dist/public && rimraf ./build",
     "serve": "vite preview"
   },
   "browserslist": {
