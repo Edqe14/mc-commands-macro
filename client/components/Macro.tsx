@@ -27,6 +27,7 @@ export default ({ name, color, id }: Command) => {
         background: color,
         color: hexToLum(color) < 0.5 ? '#FEFEFE' : '#0E0E0E'
       }}
+      className="macro"
     >
       <ReactMarkdown>{name}</ReactMarkdown>
     </Button>

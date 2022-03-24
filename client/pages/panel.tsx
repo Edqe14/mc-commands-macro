@@ -21,17 +21,17 @@ export default () => {
   };
 
   return (
-    <main className="container d-flex py-5 vh-100">
+    <main className="panel container d-flex py-5">
       <MacroModal />
 
-      <section className="col-4 d-flex flex-col me-5">
+      <section className="chat col-4 d-flex flex-col me-5">
         <Chat />
       </section>
 
       <section className="d-flex flex-column flex-grow-1">
         <h1 className="display-4 mb-3">Macros</h1>
 
-        <section className="d-grid macros flex-grow-1 gap-3 overflow-visible">
+        <section className="d-grid macros gap-3 overflow-visible">
           {store.commands.map((c, i) => (<Macro key={i} {...c} />))}
           <Button className="fs-2 outline-none" variant='info' onClick={openModal}>+</Button>
         </section>

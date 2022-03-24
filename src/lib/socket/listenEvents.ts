@@ -21,9 +21,12 @@ const events = readdirSync(dir, 'utf8')
 export function registerEmitter(socket: Socket, bot: Bot) {
   socket.emit('commands.set', Array.from(store.values()));
 
-  bot.on('chat', (name, message) => {
+  const chatHandler = (name: string, message: string) => {
     socket.emit('message', { name, message });
-  });
+  };
+
+  bot.on('chat', chatHandler);
+  socket.once('disconnect', () => bot.removeListener('chat', chatHandler));
 }
 
 export default async function listenEvents(socket: Socket, bot: Bot) {

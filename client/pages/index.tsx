@@ -19,7 +19,7 @@ export default () => {
 
   return (
     <main className="vh-100 d-flex justify-content-center align-items-center">
-      <section className="col-4">
+      <section className="col-6">
         <form onSubmit={handleSubmit}>
           <InputGroup>
             <FormControl

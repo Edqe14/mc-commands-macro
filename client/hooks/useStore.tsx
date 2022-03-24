@@ -29,6 +29,7 @@ interface StoreValues {
   emit: (name: string, data?: any) => string | null;
   authenticate: (password: string) => void;
   appendMessage: (message: string | string[]) => void;
+  clearMessages: () => void;
   getCommand: (id: string) => Command | null;
   invokeCommand: (id: string) => any;
   createConnection: (password: string) => void;
@@ -72,6 +73,9 @@ export const Provider = ({ url, ...props }: Props) => {
     appendMessage(message) {
       const wrap = Array.isArray(message) ? message : [message];
       setMessages((last) => [...last, ...wrap]);
+    },
+    clearMessages() {
+      setMessages(['*Messages cleared*']);
     },
     getCommand(id) {
       const index = commands.findIndex((command) => command.id === id);
@@ -153,6 +157,7 @@ export const Provider = ({ url, ...props }: Props) => {
             if (reason.includes('close')) {
               io.removeAllListeners();
               setSocket(null);
+              setToken(null);
 
               return navigate('/');
             }
