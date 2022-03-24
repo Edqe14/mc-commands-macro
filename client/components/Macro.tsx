@@ -1,5 +1,6 @@
 import React, { MouseEventHandler } from 'react';
 import { Button } from 'react-bootstrap';
+import ReactMarkdown from 'react-markdown';
 import { useStore } from '../hooks/useStore';
 import { Command } from '../../src/types';
 import hexToLum from '../lib/hexToLum';
@@ -26,6 +27,8 @@ export default ({ name, color, id }: Command) => {
         background: color,
         color: hexToLum(color) < 0.5 ? '#FEFEFE' : '#0E0E0E'
       }}
-    >{name}</Button>
+    >
+      <ReactMarkdown>{name}</ReactMarkdown>
+    </Button>
   );
 };

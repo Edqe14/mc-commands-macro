@@ -53,10 +53,13 @@ function interceptEvent(bot: Bot) {
 export function createInstance() {
   instance = mineflayer.createBot(settings);
 
-  if (settings.autoExec) settings.autoExec(instance);
   // BUGGY
   if (settings.autoReconnect) instance.once('end', () => {
     instance = createInstance();
+  });
+
+  instance.once('spawn', () => {
+    if (settings.autoExec) settings.autoExec(instance as Bot);
   });
 
   interceptEvent(instance);

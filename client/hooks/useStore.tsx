@@ -66,9 +66,8 @@ export const Provider = ({ url, ...props }: Props) => {
     },
     authenticate(password) {
       if (!password) return;
-      if (!socket) return this.createConnection(password);
 
-      socket.emit('auth', { token: password });
+      return this.createConnection(password);
     },
     appendMessage(message) {
       const wrap = Array.isArray(message) ? message : [message];
@@ -92,69 +91,86 @@ export const Provider = ({ url, ...props }: Props) => {
     createConnection(password) {
       // eslint-disable-next-line no-restricted-globals
       const io = createSocket(url ?? window.location.href);
+      const registerEvents = () => {
+        io.on('connect', () => {
+          // Core
+          io.on('message', ({ name, message }) => this.appendMessage(`[${name}] ${message}`));
+          io.on('commands.set', (cmds: Command[]) => setCommands(cmds));
+          io.on('commands.append', (command: Command) => setCommands((cmds) => [...cmds, command]));
+          io.on('commands.remove', ({ id, message }) => {
+            alert.success(message);
+            setCommands((cmds) => {
+              const arr = [...cmds];
+              const index = arr.findIndex((c) => c.id === id);
+              // eslint-disable-next-line no-param-reassign
+              if (index > -1) arr.splice(index, 1);
 
-      setSocket(io);
+              return arr;
+            });
+          });
 
-      io.on('connect', () => {
-        // Core
-        io.on('message', ({ name, message }) => this.appendMessage(`[${name}] ${message}`));
-        io.on('commands.set', (cmds: Command[]) => setCommands(cmds));
-        io.on('commands.append', (command: Command) => setCommands((cmds) => [...cmds, command]));
-        io.on('commands.remove', ({ id, message }) => {
-          alert.success(message);
-          setCommands((cmds) => {
+          io.on('commands.edit', (command: Command) => setCommands((cmds) => {
             const arr = [...cmds];
-            const index = arr.findIndex((c) => c.id === id);
+            const index = arr.findIndex((c) => c.id === command.id);
             // eslint-disable-next-line no-param-reassign
-            if (index > -1) arr.splice(index, 1);
+            if (index > -1) arr.splice(index, 1, command);
 
             return arr;
+          }));
+
+          io.on('success', ({ message }) => alert.success(message));
+          io.on('error', ({ message }) => alert.error(message));
+
+          // Authentication
+          io.on('auth.error', ({ message }) => {
+            alert.error(message);
+
+            if (location.pathname.includes('panel')) return navigate('/');
           });
+
+          io.once('auth.success', ({ token: tkn }) => {
+            console.info(`got token: ${tkn}`);
+
+            setToken(tkn);
+            navigate('/panel');
+          });
+
+          // Destructive events
+          io.once('auth.timeout', () => {
+            alert.error('Authentication timeout');
+
+            io.removeAllListeners();
+            setSocket((sock) => {
+              if (sock) sock.removeAllListeners();
+
+              return null;
+            });
+          });
+
+          io.once('disconnect', (reason) => {
+            alert.error(reason);
+
+            if (reason.includes('close')) {
+              io.removeAllListeners();
+              setSocket(null);
+
+              return navigate('/');
+            }
+          });
+
+          io.emit('auth', { token: password });
         });
+      };
 
-        io.on('commands.edit', (command: Command) => setCommands((cmds) => {
-          const arr = [...cmds];
-          const index = arr.findIndex((c) => c.id === command.id);
-          // eslint-disable-next-line no-param-reassign
-          if (index > -1) arr.splice(index, 1, command);
+      setSocket((sock) => {
+        if (sock) {
+          sock.removeAllListeners();
+          sock.close();
+        }
 
-          return arr;
-        }));
+        registerEvents();
 
-        io.on('success', ({ message }) => alert.success(message));
-        io.on('error', ({ message }) => alert.error(message));
-
-        // Authentication
-        io.on('auth.error', ({ message }) => {
-          alert.error(message);
-
-          if (location.pathname.includes('panel')) return navigate('/');
-        });
-        io.once('auth.success', ({ token: tkn }) => {
-          console.info(`got token: ${tkn}`);
-
-          setToken(tkn);
-          navigate('/panel');
-        });
-
-        // Destructive events
-        io.once('auth.timeout', () => {
-          alert.error('Authentication timeout');
-
-          io.removeAllListeners();
-          setSocket(null);
-        });
-
-        io.once('disconnect', (reason) => {
-          alert.error(reason);
-
-          if (reason.includes('close')) return navigate('/');
-
-          io.removeAllListeners();
-          setSocket(null);
-        });
-
-        io.emit('auth', { token: password });
+        return io;
       });
     }
   };

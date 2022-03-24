@@ -24,7 +24,10 @@ const settings: ISettings = {
   socketPort: (process.env.PORT as unknown as number) ?? 5000,
   authTimeout: 10_000,
   maxTries: 5,
+  colorsEnabled: false,
   autoExec(bot) {
+    bot.chatAddPattern(/「.*?」 (.*?)「.*?」 » (.*)/, 'chat');
+
     bot.on('chat', async (name: string, message: string) => {
       if (name !== 'command') return;
 

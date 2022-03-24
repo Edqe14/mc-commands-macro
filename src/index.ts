@@ -18,7 +18,7 @@ io.on('connection', async (socket) => {
 
   const timeout = settings.authTimeout > 0
     ? setTimeout(() => {
-      console.log(`[${socket.id}] Timeout`);
+      console.log(`[${socket.id}] timeout`);
 
       connections.delete(socket.id);
       socket.emit('auth.timeout', { message: 'Authentication timeout' });

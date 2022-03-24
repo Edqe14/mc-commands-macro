@@ -21,7 +21,7 @@ const events = readdirSync(dir, 'utf8')
 export function registerEmitter(socket: Socket, bot: Bot) {
   socket.emit('commands.set', Array.from(store.values()));
 
-  bot.on('chat', (name: string, message: string) => {
+  bot.on('chat', (name, message) => {
     socket.emit('message', { name, message });
   });
 }
