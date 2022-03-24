@@ -16,11 +16,12 @@ interface ISettings extends BotOptions {
 
 const settings: ISettings = {
   autoReconnect: true,
-  host: 'spicycake.minecraft-id.net',
+  host: process.env.MC_HOST ?? 'localhost',
+  port: process.env.MC_PORT as unknown as number ?? 25565,
   username: 'BOT_Controller',
   requireAuth: true,
   token: process.env.TOKEN as string,
-  socketPort: 3000,
+  socketPort: (process.env.PORT as unknown as number) ?? 5000,
   authTimeout: 10_000,
   maxTries: 5,
   autoExec(bot) {
