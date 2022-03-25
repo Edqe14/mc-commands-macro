@@ -71,6 +71,8 @@ export function createInstance() {
   instance.once('spawn', () => {
     if (settings.autoExec) settings.autoExec(instance as Bot);
 
+    restartCount = 0;
+
     console.log('MC Spawned');
   });
 
