@@ -50,12 +50,22 @@ function interceptEvent(bot: Bot) {
   return bot;
 }
 
+let restartCount = 0;
+
 export function createInstance() {
   instance = mineflayer.createBot(settings);
 
   // BUGGY
   if (settings.autoReconnect) instance.once('end', () => {
+    if (restartCount > settings.maxTries) {
+      console.warn('Max tries exceeded, exiting...');
+
+      return process.exit(1);
+    }
+
     instance = createInstance();
+
+    restartCount += 1;
   });
 
   instance.once('spawn', () => {

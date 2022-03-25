@@ -17,6 +17,6 @@ const io = new Server(httpServer, {
 
 httpServer.listen(settings.socketPort);
 
-console.log(`Server listening on ${settings.socketPort}`);
+console.log(`Server started and listening on ${settings.socketPort}`);
 
 export default io;
